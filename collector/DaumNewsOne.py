@@ -27,6 +27,12 @@ from bs4 import BeautifulSoup
 
 
 # 목표: Daum 뉴스 웹페이지의 제목과 본문 데이터를 수집!
+# 1) requests로 해당 URL의 전체 소스코드를 가지고 옴!
+# 2) Beautifulsoup(bs4)에게 전체 소스코드 전달 -> doc
+# 3) bs4가 전체 소스코드에서 원하는 데이터만 select
+
+
+
 # 1.url: https://v.daum.net/v/20221006104543543
 url = 'https://v.daum.net/v/20221006104543543'
 # 2.requests로 해당 url의 html 전체 코드를 수집!
@@ -37,6 +43,22 @@ doc = BeautifulSoup(result.text, 'html.parser')
 # python의 []: list Type
 # index    0  1  2  3   4
 #       - [5, 5, 9, 10, 15] : List 내에는 다양한 데이터 저장 가능
-title = doc.select('h3.tit_view')[0].get_text()
+title = doc.select('h3.tit_view')[0].get_text()  # h3태그 중에 이름이 tit_view를 갖는 것 select
+
+# html -> tag + 선택자
+#  - tag: 기본적으로 정의 돼있음(h3, p, div, span, ...)
+contents = doc.select('section p')  # section 태그를 부모로 둔 모든 자식 p태그를 select
 
 print(f'뉴스제목: {title}')
+
+# contents = [<p1>, <p2>, <p3>, <p4>, ...] : 복수의 본문 포함
+# <p1> = <p>11111111111111111</p1>
+# <p2> = <p>22222222222222222</p1>
+# <p3> = <p>33333333333333333</p1>
+# <p4> = <p>44444444444444444</p1>
+
+# 반복적인 작업 -> for문
+content = ''
+for line in contents:  # 순서대로 <p>를 가져와서 line에 넣고 다음 코드 실행
+    content += line.get_text()
+print(f'뉴스본문: {content}')
